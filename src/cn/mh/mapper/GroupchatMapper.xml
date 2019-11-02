@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mh.mapper.GroupchatMapper">
+	<resultMap id="BaseResultMap" type="cn.mh.po.Groupchat">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="num" property="num" jdbcType="INTEGER" />
+		<result column="time" property="time" jdbcType="VARCHAR" />
+		<result column="userId" property="userid" jdbcType="INTEGER" />
+	</resultMap>
+
+	<resultMap type="cn.mh.po.Groupchat" id="groupUsersMap" extends="BaseResultMap">
+		<collection property="groupUsers" ofType="cn.mh.po.GroupUser">
+			<id column="uId" property="id" />
+			<result column="friendId" property="friendId" />
+		</collection>
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		id, name, num, time, userId
+	</sql>
+
+	<!--查找用户id下的群信息 -->
+	<select id="findById" parameterType="int" resultMap="BaseResultMap">
+		select *
+		from groupchat where userId = #{id}
+	</select>
+	
+	<insert id="insert" parameterType="cn.mh.po.Groupchat">
+			<selectKey resultType="Integer" order="AFTER" keyProperty="id">
+   		 SELECT LAST_INSERT_ID()
+   	</selectKey>
+		insert into groupchat(name,userId) values(#{name},#{userid});
+	</insert>
+	
+	<select id="findByGId" parameterType="int" resultMap="groupUsersMap">
+		SELECT
+			c.*,
+			u.id uId,
+			u.friendId
+		FROM
+			groupchat c,group_user u
+		WHERE
+			c.id = u.groupchatId
+			AND c.id = #{id}
+	</select>
+
+
+</mapper>

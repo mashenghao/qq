@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mh.mapper.ChatFileMapper">
+
+	<insert id="insert" parameterType="cn.mh.po.ChatFile">
+		insert into file ( path, fileName,
+		groupchatId)
+		values (#{path},#{fileName},#{groupchatId})
+	</insert>
+	
+	<select id="getFileByGid" parameterType="String" resultType="cn.mh.po.ChatFile">
+		select * from file where groupchatId =#{id}
+	</select>
+	
+	<select id="findByName" parameterType="map" resultType="cn.mh.po.ChatFile">
+		select * from file where groupchatId =#{id} and fileName=#{filename}
+	</select>
+	
+</mapper>

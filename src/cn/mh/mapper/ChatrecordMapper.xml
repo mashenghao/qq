@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mh.mapper.ChatrecordMapper">
+
+	<resultMap id="BaseResultMap" type="cn.mh.po.Chatrecord">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="content" property="content" jdbcType="VARCHAR" />
+		<result column="time" property="time"  />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="friend_id" property="friendId" jdbcType="INTEGER" />
+	</resultMap>
+
+
+	<sql id="Base_Column_List">
+		id, content, time, user_id, friend_id
+	</sql>
+
+	
+	<select id="findChat" parameterType="map" resultMap="BaseResultMap">
+		select * from chatrecord where user_id = #{userId} and friend_id =#{friendId}
+ 	</select>
+		
+		<select id="findChats" parameterType="cn.mh.po.Chatrecord" resultMap="BaseResultMap">
+			select * from chatrecord 
+			<where>
+				<if test="userId!=null and userId != ''">
+					and user_id =#{userId}
+				</if>
+				<if test="se!=null and se !=''">
+					and time LIKE '%${se}%'
+				</if>
+				<if test="friendId!=null and friendId!=''">
+					and friend_id =#{friendId}
+				</if>
+				<if test="content !=null and content!=''">
+					and content LIKE '%${content}%'  
+				</if>
+			</where>
+		</select>
+	
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from chatrecord
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+
+	<delete id="delete" parameterType="java.lang.Integer">
+		delete from chatrecord
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="insert" parameterType="cn.mh.po.Chatrecord">
+		<selectKey resultType="int" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into chatrecord (id, content, time,
+		user_id, friend_id)
+		values (#{id,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR},
+		#{time},
+		#{userId,jdbcType=INTEGER}, #{friendId,jdbcType=INTEGER})
+	</insert>
+
+	<update id="update" parameterType="cn.mh.po.Chatrecord">
+		update chatrecord
+		set content = #{content,jdbcType=VARCHAR},
+		time = #{time},
+		user_id = #{userId,jdbcType=INTEGER},
+		friend_id = #{friendId,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+</mapper>

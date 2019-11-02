@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mh.mapper.GroupsMapper" >
+  
+  <resultMap id="BaseResultMap" type="cn.mh.po.Groups" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="orders" property="orders" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, name, orders, user_id
+  </sql>
+  
+  <select id="findAll" parameterType="int" resultMap="BaseResultMap">
+  	select * from groups where user_id = #{userId}
+  </select>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from groups
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="delete" parameterType="java.lang.Integer" >
+    delete from groupchat 
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <delete id="deletes" parameterType="cn.mh.po.Groups" >
+    delete from groups
+    where user_id = #{userId} and name = #{name}
+   </delete>
+  
+  
+  <insert id="insert" parameterType="cn.mh.po.Groups" >
+    insert into groups ( name,  
+      user_id)
+    values ( #{name,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=INTEGER})
+  </insert>
+ 
+  <update id="update" parameterType="cn.mh.po.Groups" >
+    update groups
+    set name = #{name,jdbcType=VARCHAR},
+      orders = #{orders,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
